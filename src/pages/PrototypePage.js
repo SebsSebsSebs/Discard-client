@@ -26,14 +26,15 @@ export default function PrototypePage() {
   const sendMessage = (e) => {
     e.preventDefault();
     const userId = 4; //get user data from state
-    const userName = "test";
-    const userImage = "testURL";
+    const userName = "test"; //get user data from state
+    const userImage = "testURL"; //get user data from state
     const nowTime = moment();
     const type = "text"; // type of the message
-    const chatMessage = message;
+    const chatMessage = message; //the message written
 
     socket.emit("Input chat message", {
-      userId, //things you want to send to the server
+        //things you want to send to the server
+      userId, 
       userName,
       userImage,
       nowTime,
