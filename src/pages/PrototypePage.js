@@ -2,19 +2,21 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { io } from "socket.io-client";
 import userContext from "../context/userContext";
-import moment from "moment";
+// import moment from "moment";
 import axios from "axios";
 
 const socket = io.connect("http://localhost:4000", { reconnect: true });
 // config[process.env.NODE_ENV].endpoint
 export default function PrototypePage() {
   const [message, setMessage] = useState("");
-  const [chatData, setChatData] = useState(null);
+  // const [chatData, setChatData] = useState(null);
   const [newMessage, setNewMessage] = useState([]);
 
-  const { user, getUser } = useContext(userContext);
+  const { user, getUser, userInformation, getUserProfile } = useContext(
+    userContext
+  );
   const history = useHistory();
-
+  console.log("prototypepage user infromation:", userInformation);
   useEffect(() => {
     //first get all the message data from MongoDB
     async function getMessages() {
@@ -31,11 +33,8 @@ export default function PrototypePage() {
       setNewMessage([...newMessage, messageFromServer]); // then render this message
     });
 
- 
-
     //Connect with server
   }, [newMessage]);
-
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -48,7 +47,7 @@ export default function PrototypePage() {
     const text = message;
     const channelId = 1;
     const isImg = false;
-    const userId = parseInt(Math.random() * 1000);
+    const userId = user;
 
     socket.emit("Input chat message", {
       //things you want to send to the server
@@ -62,6 +61,7 @@ export default function PrototypePage() {
       channelId,
       isImg,
       userId,
+      userName: userInformation.username,
     });
     setMessage("");
   };
@@ -69,6 +69,7 @@ export default function PrototypePage() {
   async function logOut() {
     await axios.get("http://localhost:4000/user/logout");
     getUser();
+    getUserProfile();
     history.push("/login");
   }
 
@@ -78,13 +79,21 @@ export default function PrototypePage() {
       <p>Prototype page</p>
       {/* <p>{chatData.chatMessage}</p>*/}
       {newMessage ? (
-        newMessage.map((msg, index) => (
-          <>
-            <p key={index}>
-              {msg.userId}:{msg.text}
-            </p>
-          </>
-        ))
+        newMessage.map((msg, index) =>
+          msg.userId === user ? (
+            <>
+              <p key={index} style={{ textAlign: "right" }}>
+                {msg.userName}:{msg.text}
+              </p>
+            </>
+          ) : (
+            <>
+              <p key={index} style={{ textAlign: "left" }}>
+                {msg.userName}:{msg.text}
+              </p>
+            </>
+          )
+        )
       ) : (
         <></>
       )}
