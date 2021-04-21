@@ -15,8 +15,8 @@ function UserContextProvider(props) {
 
   async function getUserProfile() {
     const userRes = await Axios.get("http://localhost:4000/user/myprofile");
-    setUserInformation(userRes.data.myProfile[0]);
-    console.log("what is res profileinformation", userRes);
+    setUserInformation(userRes.data);
+    console.log("what is res profileinformation", userRes.data);
   }
 
   useEffect(() => {

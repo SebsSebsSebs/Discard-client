@@ -61,7 +61,7 @@ export default function PrototypePage() {
       channelId,
       isImg,
       userId,
-      userName: userInformation.username,
+      userName: userInformation.myProfile[0].username,
     });
     setMessage("");
   };
