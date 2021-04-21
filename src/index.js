@@ -5,12 +5,17 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
 
+import { UserContextProvider } from "./context/userContext";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
+
 ReactDOM.render(
-  <React.StrictMode>
+  <UserContextProvider>
     <Router>
       <App />
     </Router>
-  </React.StrictMode>,
+  </UserContextProvider>,
   document.getElementById("root")
 );
 

@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { io } from "socket.io-client";
+import userContext from "../context/userContext";
 import moment from "moment";
 import axios from "axios";
 
@@ -9,6 +11,9 @@ export default function PrototypePage() {
   const [message, setMessage] = useState("");
   const [chatData, setChatData] = useState(null);
   const [newMessage, setNewMessage] = useState(null);
+
+  const { user, getUser } = useContext(userContext);
+  const history = useHistory();
 
   useEffect(() => {
     //first get all the message data from MongoDB
@@ -24,7 +29,7 @@ export default function PrototypePage() {
       //another action to put this output in redux store or state
       setNewMessage(messageFromServer); // then render this message
     });
-  });
+  }, []);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -47,8 +52,15 @@ export default function PrototypePage() {
     setMessage("");
   };
 
+  async function logOut() {
+    await axios.get("http://localhost:4000/user/logout");
+    getUser();
+    history.push("/login");
+  }
+
   return (
     <div>
+      <button onClick={logOut}>logout</button>
       <p>Prototype page</p>
       {/* <p>{chatData.chatMessage}</p>
       <p>{newMessage.chatMessage}</p> */}

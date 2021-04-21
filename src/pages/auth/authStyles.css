@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+}
+
+/* form */
+
+.form_title {
+  padding-top: 0.7em;
+  padding-bottom: 0.7em;
+  text-align: center;
+}
+
+Input {
+  text-align: center;
+}
+
+.auth_wrap {
+  display: flex;
+  justify-content: center;
+  padding: 50px;
+}
+.app_signup {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 600px;
+  height: auto;
+}
+
+.login_link {
+  font-size: 0.5em;
+}
+
+.auth_wrap p {
+  font-size: 0.9em;
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.avatar_add {
+  display: flex;
+  justify-content: space-around;
+}
+.text {
+  padding: 10%;
+}
