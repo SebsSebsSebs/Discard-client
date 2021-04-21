@@ -8,7 +8,7 @@ const socket = io.connect("http://localhost:4000", { reconnect: true });
 export default function PrototypePage() {
   const [message, setMessage] = useState("");
   const [chatData, setChatData] = useState(null);
-  const [newMessage, setNewMessage] = useState(null);
+  const [newMessage, setNewMessage] = useState([]);
 
   useEffect(() => {
     //first get all the message data from MongoDB
@@ -18,31 +18,41 @@ export default function PrototypePage() {
       // setChatData(res.data);
     }
     getMessages();
-    //Connect with server
+    const messages = [];
     socket.on("Output chat message", (messageFromServer) => {
       console.log(messageFromServer); //check if all data is logged out
       //another action to put this output in redux store or state
-      setNewMessage(messageFromServer); // then render this message
+      messages.push(messageFromServer);
+      setNewMessage([...newMessage, messageFromServer]); // then render this message
     });
-  });
+    //Connect with server
+  }, [newMessage]);
 
   const sendMessage = (e) => {
     e.preventDefault();
-    const userId = 4; //get user data from state
-    const userName = "test"; //get user data from state
-    const userImage = "testURL"; //get user data from state
-    const nowTime = moment();
-    const type = "text"; // type of the message
-    const chatMessage = message; //the message written
+    // const userId = 4; //get user data from state
+    // const userName = "seb"; //get user data from state
+    // const userImage = "testURL"; //get user data from state
+    // const nowTime = moment();
+    // const type = "text"; // type of the message
+    // const chatMessage = message; //the message written
+    const text = message;
+    const channelId = 1;
+    const isImg = false;
+    const userId = parseInt(Math.random() * 1000);
 
     socket.emit("Input chat message", {
       //things you want to send to the server
+      // userId,
+      // userName,
+      // userImage,
+      // nowTime,
+      // type,
+      // chatMessage,
+      text,
+      channelId,
+      isImg,
       userId,
-      userName,
-      userImage,
-      nowTime,
-      type,
-      chatMessage,
     });
     setMessage("");
   };
@@ -50,15 +60,24 @@ export default function PrototypePage() {
   return (
     <div>
       <p>Prototype page</p>
-      {/* <p>{chatData.chatMessage}</p>
-      <p>{newMessage.chatMessage}</p> */}
+      {/* <p>{chatData.chatMessage}</p>*/}
+      {newMessage ? (
+        newMessage.map((msg, index) => (
+          <>
+            <p key={index}>
+              {msg.userId}:{msg.text}
+            </p>
+          </>
+        ))
+      ) : (
+        <></>
+      )}
+
       <form onSubmit={sendMessage}>
         <label>Message:</label>
         <br></br>
-        <textarea
-          type="textarea"
-          rows="4"
-          cols="50"
+        <input
+          type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
