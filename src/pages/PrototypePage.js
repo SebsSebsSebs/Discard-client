@@ -3,23 +3,26 @@ import { io } from "socket.io-client";
 import moment from "moment";
 import axios from "axios";
 
-const socket = io("hhtp://localhost:4000");
-
+const socket = io.connect("http://localhost:4000", { reconnect: true });
+// config[process.env.NODE_ENV].endpoint
 export default function PrototypePage() {
   const [message, setMessage] = useState("");
   const [chatData, setChatData] = useState(null);
-  const [newMessage, setNewMessage] = useState(null)
+  const [newMessage, setNewMessage] = useState(null);
 
   useEffect(() => {
     //first get all the message data from MongoDB
-    const res = await axios.get("url")
-    console.log(res.data)
-    setChatData(res.data)
+    async function getMessages() {
+      // const res = await axios.get("http://localhost:4000");
+      // console.log(res.data);
+      // setChatData(res.data);
+    }
+    getMessages();
     //Connect with server
     socket.on("Output chat message", (messageFromServer) => {
       console.log(messageFromServer); //check if all data is logged out
       //another action to put this output in redux store or state
-      setNewMessage(messageFromServer) // then render this message 
+      setNewMessage(messageFromServer); // then render this message
     });
   });
 
@@ -33,8 +36,8 @@ export default function PrototypePage() {
     const chatMessage = message; //the message written
 
     socket.emit("Input chat message", {
-        //things you want to send to the server
-      userId, 
+      //things you want to send to the server
+      userId,
       userName,
       userImage,
       nowTime,
@@ -47,8 +50,8 @@ export default function PrototypePage() {
   return (
     <div>
       <p>Prototype page</p>
-      {/* <p>{chatData.chatMessage}</p> //showing all the message logs */}
-      {/* <p>{newMessage.chatMessage}</p> */}
+      {/* <p>{chatData.chatMessage}</p>
+      <p>{newMessage.chatMessage}</p> */}
       <form onSubmit={sendMessage}>
         <label>Message:</label>
         <br></br>
