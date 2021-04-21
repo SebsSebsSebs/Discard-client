@@ -74,7 +74,7 @@ export default function PrototypePage() {
       )}
 
       <form onSubmit={sendMessage}>
-        <label>Message:</label>
+        <label>Message:afjelkwjflwk</label>
         <br></br>
         <input
           type="text"
