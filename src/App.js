@@ -10,9 +10,10 @@ function App() {
     <div className="App">
       <Switch>
         <Route exact path="/" component={ChannelPage}></Route>
-        <Route exact path="messages" component={PrototypePage}></Route>
+        {/* <Route exact path="messages" component={PrototypePage}></Route> */}
         <Route exact path="/login" component={Login}></Route>
         <Route exact path="/signup" component={Signup}></Route>
+        <Route path="/messages/:channelId" component={PrototypePage}></Route>
       </Switch>
     </div>
   );

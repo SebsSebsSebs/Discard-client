@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { io } from "socket.io-client";
 import userContext from "../context/userContext";
 import axios from "axios";
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 
 const socket = io.connect("http://localhost:4000", { reconnect: true });
 
@@ -11,8 +13,11 @@ export default function PrototypePage() {
   const [messagesFromDB, setMessagesFromDB] = useState([]);
 
   const { user, logOut, userInformation } = useContext(userContext);
+  const route_params = useParams();
+  const route_channelId = route_params.channelId;
 
-  console.log("prototypepage user infromation:", userInformation);
+  console.log(typeof route_channelId);
+
   useEffect(() => {
     //first get all the message data from MongoDB
     async function getMessages() {
@@ -34,12 +39,13 @@ export default function PrototypePage() {
 
   useEffect(() => {
     async function getData() {
-      const channelId = 1;
       const response = await axios.get(
-        `http://localhost:4000/message/${channelId}`
+        `http://localhost:4000/message/${route_channelId}`
       );
+      if (Array.isArray(response.data)) {
+        setMessagesFromDB(response.data);
+      }
       console.log("response with all messages:", response.data);
-      setMessagesFromDB(response.data);
     }
     getData();
   }, []);
@@ -48,13 +54,11 @@ export default function PrototypePage() {
     e.preventDefault();
 
     const text = message;
-    const channelId = 1;
+    const channelId = route_channelId;
     const isImg = false;
     const userId = user;
 
     socket.emit("Input chat message", {
-      //things you want to send to the server
-
       text,
       channelId,
       isImg,
@@ -66,42 +70,45 @@ export default function PrototypePage() {
 
   return (
     <div>
+      <Link to="/">
+        <button>Go back</button>
+      </Link>
       <button onClick={logOut}>logout</button>
       <p>Prototype page</p>
 
-      {messagesFromDB ? (
+      {messagesFromDB.length ? (
         messagesFromDB.map((msg, index) =>
           msg.userId._id === user ? (
-            <>
-              <p key={index} style={{ textAlign: "right" }}>
+            <div key={index}>
+              <p style={{ textAlign: "right" }}>
                 {msg.userId.username}:{msg.text}
               </p>
-            </>
+            </div>
           ) : (
-            <>
-              <p key={index} style={{ textAlign: "left" }}>
+            <div key={index}>
+              <p style={{ textAlign: "left" }}>
                 {msg.userId.username}:{msg.text}
               </p>
-            </>
+            </div>
           )
         )
       ) : (
         <></>
       )}
-      {newMessage ? (
+      {newMessage.length ? (
         newMessage.map((msg, index) =>
           msg.userId === user ? (
-            <>
-              <p key={index} style={{ textAlign: "right" }}>
+            <div key={index}>
+              <p style={{ textAlign: "right" }}>
                 {msg.userName}:{msg.text}
               </p>
-            </>
+            </div>
           ) : (
-            <>
-              <p key={index} style={{ textAlign: "left" }}>
+            <div key={index}>
+              <p style={{ textAlign: "left" }}>
                 {msg.userName}:{msg.text}
               </p>
-            </>
+            </div>
           )
         )
       ) : (

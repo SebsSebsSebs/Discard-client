@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ChannelsRender from "../components/ChannelsRender";
 import { Button, Input } from "@material-ui/core";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
+import { Link } from "react-router-dom";
+import userContext from "../context/userContext";
 
 // modalStyle
 function rand() {
@@ -33,9 +35,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ChannelPage() {
+  const { logOut } = useContext(userContext);
   const [channels, setChannels] = useState([]);
   const [newChannel, setNewChannel] = useState("");
-  console.log("what is new channel", newChannel);
   //modal
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
@@ -82,12 +84,12 @@ function ChannelPage() {
 
   async function getData() {
     const response = await axios.get(`http://localhost:4000/channel/`);
-
     setChannels(response.data);
   }
 
   return (
     <div>
+      <button onClick={logOut}>logout</button>
       <h1>this is channel page</h1>
       {/* channel section */}
       {/* create channels */}
@@ -107,7 +109,9 @@ function ChannelPage() {
       {/* map out channels  */}
       {channels.map((channelInfo, index) => (
         <div key={index}>
-          <h1>{channelInfo.channelName}</h1>
+          <Link to={`/messages/${channelInfo._id}`}>
+            <h1>{channelInfo.channelName}</h1>
+          </Link>
         </div>
       ))}
     </div>
