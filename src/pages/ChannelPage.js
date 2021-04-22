@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import ChannelsRender from "../components/ChannelsRender";
 import { Button, Input } from "@material-ui/core";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import { Link } from "react-router-dom";
 import userContext from "../context/userContext";
+import Logo from "../quicklyLogo.png";
 
 // modalStyle
 function rand() {
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ChannelPage() {
-  const { logOut } = useContext(userContext);
+  const { logOut, user } = useContext(userContext);
   const [channels, setChannels] = useState([]);
   const [newChannel, setNewChannel] = useState("");
   //modal
@@ -88,32 +88,52 @@ function ChannelPage() {
   }
 
   return (
-    <div>
-      <button onClick={logOut}>logout</button>
-      <h1>this is channel page</h1>
-      {/* channel section */}
-      {/* create channels */}
-
-      <Button type="button" onClick={handleOpen}>
-        create channel
-      </Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {body}
-      </Modal>
-
-      {/* map out channels  */}
-      {channels.map((channelInfo, index) => (
-        <div key={index}>
-          <Link to={`/messages/${channelInfo._id}`}>
-            <h1>{channelInfo.channelName}</h1>
-          </Link>
+    <div className="main_wrap">
+      {!user ? (
+        <div>
+          <div className="logo_noAuth">
+            <img className="logo" src={Logo} alt="img" />
+          </div>
+          <div className="landing">
+            <div className="welcome">
+              <h1>Welcome!</h1>
+              <p>Sign up to get started! </p>
+            </div>
+            <div>
+              <Link to="/signup">
+                <button className="create_channel" type="button">
+                  Sign up
+                </button>
+              </Link>
+            </div>
+          </div>
         </div>
-      ))}
+      ) : (
+        <div className="wrapper-buttons">
+          <img className="logo" src={Logo} alt="img" />
+
+          <button className="create_channel" type="button" onClick={handleOpen}>
+            create channel
+          </button>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {body}
+          </Modal>
+          {channels.map((channelInfo, index) => (
+            <div className="blue-button" key={index}>
+              <Link to={`/messages/${channelInfo._id}`}>
+                <h1>{channelInfo.channelName}</h1>
+              </Link>
+            </div>
+          ))}
+
+          <button onClick={logOut}>logout</button>
+        </div>
+      )}
     </div>
   );
 }

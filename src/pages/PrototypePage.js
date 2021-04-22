@@ -87,77 +87,76 @@ export default function PrototypePage() {
   return (
     <div>
       <Link to="/">
-        <button className="button">Go back</button>
+        <button className="goBack">Back to channels</button>
       </Link>
-      <button className="button" onClick={logOut}>
-        logout
-      </button>
       <p style={{ color: "azure", fontWeight: "bold" }}>*Channel</p>
       <div className="ChatBox">
-        {messagesFromDB.length ? (
-          messagesFromDB.map((msg, index) =>
-            msg.userId._id === user ? (
-              <div className="Pim">
-                <div
-                  className="fixbutton"
-                  key={index}
-                  ref={messagesFromDB ? setRef : null}
-                >
-                  <p style={{ textAlign: "right" }}>{msg.text}</p>
+        <div className="test">
+          {messagesFromDB.length ? (
+            messagesFromDB.map((msg, index) =>
+              msg.userId._id === user ? (
+                <div className="Pim">
+                  <div
+                    className="fixbutton"
+                    key={index}
+                    ref={messagesFromDB ? setRef : null}
+                  >
+                    <p style={{ textAlign: "right" }}>{msg.text}</p>
 
-                  <HighlightOffIcon
-                    className="button"
-                    onClick={() => deleteClicked(msg._id)}
-                  />
+                    <HighlightOffIcon
+                      className="button"
+                      onClick={() => deleteClicked(msg._id)}
+                    />
+                  </div>
+                  <div>
+                    <p className="rightenter">
+                      {moment(msg.createdAt).format("h:mm a")}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="rightenter">
-                    {moment(msg.createdAt).format("h:mm a")}
-                  </p>
+              ) : (
+                <div key={index}>
+                  <div className="LeftPim">
+                    <p style={{ textAlign: "left" }}>
+                      <span style={{ color: "purple" }}>
+                        {msg.userId.username}
+                      </span>
+                      :{msg.text}
+                    </p>
+                    <div className="enter">
+                      <p>{moment(msg.createdAt).format("h:mm a")}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div key={index}>
-                <div className="LeftPim">
+              )
+            )
+          ) : (
+            <></>
+          )}
+          {newMessage.length ? (
+            newMessage.map((msg, index) =>
+              msg.userId === user ? (
+                <div key={index} ref={newMessage ? setRef : null}>
+                  <p style={{ textAlign: "right" }}>{msg.text}</p>
+                  <div className="rightenter">
+                    <p>{moment(msg.createdAt).format("h:mm a")}</p>
+                  </div>
+                </div>
+              ) : (
+                <div key={index}>
                   <p style={{ textAlign: "left" }}>
-                    <span style={{ color: "purple" }}>
-                      {msg.userId.username}
-                    </span>
-                    :{msg.text}
+                    {msg.userName}:{msg.text}
                   </p>
                   <div className="enter">
                     <p>{moment(msg.createdAt).format("h:mm a")}</p>
                   </div>
                 </div>
-              </div>
+              )
             )
-          )
-        ) : (
-          <></>
-        )}
-        {newMessage.length ? (
-          newMessage.map((msg, index) =>
-            msg.userId === user ? (
-              <div key={index} ref={newMessage ? setRef : null}>
-                <p style={{ textAlign: "right" }}>{msg.text}</p>
-                <div className="rightenter">
-                  <p>{moment(msg.createdAt).format("h:mm a")}</p>
-                </div>
-              </div>
-            ) : (
-              <div key={index}>
-                <p style={{ textAlign: "left" }}>
-                  {msg.userName}:{msg.text}
-                </p>
-                <div className="enter">
-                  <p>{moment(msg.createdAt).format("h:mm a")}</p>
-                </div>
-              </div>
-            )
-          )
-        ) : (
-          <></>
-        )}
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
       <form onSubmit={sendMessage} className="RenaForm">
         <TextField
@@ -166,7 +165,7 @@ export default function PrototypePage() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           id="outlined-basic"
-          label="Type here BITCH"
+          label="Type your message..."
           variant="outlined"
         />
         <Button
