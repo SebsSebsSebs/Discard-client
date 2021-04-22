@@ -107,7 +107,6 @@ export default function PrototypePage() {
               <p style={{ textAlign: "right" }}>
                 {msg.userName}:{msg.text}
               </p>
-              <button>X</button>
             </div>
           ) : (
             <div key={index}>
