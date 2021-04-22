@@ -11,11 +11,11 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 
 ReactDOM.render(
-  <UserContextProvider>
-    <Router>
+  <Router>
+    <UserContextProvider>
       <App />
-    </Router>
-  </UserContextProvider>,
+    </UserContextProvider>
+  </Router>,
   document.getElementById("root")
 );
 

@@ -1,21 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
 import { io } from "socket.io-client";
 import userContext from "../context/userContext";
-// import moment from "moment";
 import axios from "axios";
 
 const socket = io.connect("http://localhost:4000", { reconnect: true });
-// config[process.env.NODE_ENV].endpoint
+
 export default function PrototypePage() {
   const [message, setMessage] = useState("");
-  // const [chatData, setChatData] = useState(null);
   const [newMessage, setNewMessage] = useState([]);
+  const [messagesFromDB, setMessagesFromDB] = useState([]);
 
-  const { user, getUser, userInformation, getUserProfile } = useContext(
-    userContext
-  );
-  const history = useHistory();
+  const { user, logOut, userInformation } = useContext(userContext);
+
   console.log("prototypepage user infromation:", userInformation);
   useEffect(() => {
     //first get all the message data from MongoDB
@@ -36,14 +32,21 @@ export default function PrototypePage() {
     //Connect with server
   }, [newMessage]);
 
+  useEffect(() => {
+    async function getData() {
+      const channelId = 1;
+      const response = await axios.get(
+        `http://localhost:4000/message/${channelId}`
+      );
+      console.log("response with all messages:", response.data);
+      setMessagesFromDB(response.data);
+    }
+    getData();
+  }, []);
+
   const sendMessage = (e) => {
     e.preventDefault();
-    // const userId = 4; //get user data from state
-    // const userName = "seb"; //get user data from state
-    // const userImage = "testURL"; //get user data from state
-    // const nowTime = moment();
-    // const type = "text"; // type of the message
-    // const chatMessage = message; //the message written
+
     const text = message;
     const channelId = 1;
     const isImg = false;
@@ -51,12 +54,7 @@ export default function PrototypePage() {
 
     socket.emit("Input chat message", {
       //things you want to send to the server
-      // userId,
-      // userName,
-      // userImage,
-      // nowTime,
-      // type,
-      // chatMessage,
+
       text,
       channelId,
       isImg,
@@ -66,18 +64,30 @@ export default function PrototypePage() {
     setMessage("");
   };
 
-  async function logOut() {
-    await axios.get("http://localhost:4000/user/logout");
-    getUser();
-    getUserProfile();
-    history.push("/login");
-  }
-
   return (
     <div>
       <button onClick={logOut}>logout</button>
       <p>Prototype page</p>
-      {/* <p>{chatData.chatMessage}</p>*/}
+
+      {messagesFromDB ? (
+        messagesFromDB.map((msg, index) =>
+          msg.userId._id === user ? (
+            <>
+              <p key={index} style={{ textAlign: "right" }}>
+                {msg.userId.username}:{msg.text}
+              </p>
+            </>
+          ) : (
+            <>
+              <p key={index} style={{ textAlign: "left" }}>
+                {msg.userId.username}:{msg.text}
+              </p>
+            </>
+          )
+        )
+      ) : (
+        <></>
+      )}
       {newMessage ? (
         newMessage.map((msg, index) =>
           msg.userId === user ? (
