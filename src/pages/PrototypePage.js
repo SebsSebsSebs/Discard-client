@@ -11,31 +11,29 @@ export default function PrototypePage() {
   const [message, setMessage] = useState("");
   const [newMessage, setNewMessage] = useState([]);
   const [messagesFromDB, setMessagesFromDB] = useState([]);
+  const [deletedMessage, setDeletedMessage] = useState(false);
 
   const { user, logOut, userInformation } = useContext(userContext);
   const route_params = useParams();
   const route_channelId = route_params.channelId;
 
-  console.log(typeof route_channelId);
-
   useEffect(() => {
-    //first get all the message data from MongoDB
-    async function getMessages() {
-      // const res = await axios.get("http://localhost:4000");
-      // console.log(res.data);
-      // setChatData(res.data);
-    }
-    getMessages();
     const messages = [];
     socket.on("Output chat message", (messageFromServer) => {
-      console.log(messageFromServer); //check if all data is logged out
-      //another action to put this output in redux store or state
+      console.log(messageFromServer);
       messages.push(messageFromServer);
-      setNewMessage([...newMessage, messageFromServer]); // then render this message
+      setNewMessage([...newMessage, messageFromServer]);
     });
-
-    //Connect with server
   }, [newMessage]);
+
+  socket.on("Done deleting chat message", (msg) => {
+    const isDeleted = msg === "true" ? true : false;
+    if (deletedMessage) {
+      setDeletedMessage(!isDeleted);
+    } else {
+      setDeletedMessage(isDeleted);
+    }
+  });
 
   useEffect(() => {
     async function getData() {
@@ -48,7 +46,7 @@ export default function PrototypePage() {
       console.log("response with all messages:", response.data);
     }
     getData();
-  }, []);
+  }, [deletedMessage]);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -68,6 +66,12 @@ export default function PrototypePage() {
     setMessage("");
   };
 
+  const deleteClicked = (id) => {
+    socket.emit("Delete chat message", {
+      messageId: id,
+    });
+  };
+
   return (
     <div>
       <Link to="/">
@@ -83,6 +87,7 @@ export default function PrototypePage() {
               <p style={{ textAlign: "right" }}>
                 {msg.userId.username}:{msg.text}
               </p>
+              <button onClick={() => deleteClicked(msg._id)}>X</button>
             </div>
           ) : (
             <div key={index}>
@@ -102,6 +107,7 @@ export default function PrototypePage() {
               <p style={{ textAlign: "right" }}>
                 {msg.userName}:{msg.text}
               </p>
+              <button>X</button>
             </div>
           ) : (
             <div key={index}>
