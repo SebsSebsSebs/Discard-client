@@ -1,5 +1,91 @@
 .App {
   text-align: center;
-  width: 600px;
+  max-width: 600px;
   margin: auto;
+}
+
+.button {
+  display: inline-block;
+
+  /* text-align: center; */
+  /* transition-duration: 0, 4s;
+  border-radius: 7px;
+  box-shadow: 0 4px #999; */
+}
+
+/* .IconButton {
+  width: 10px;
+  height: 10px;
+} */
+
+.button:hover {
+  color: red;
+}
+
+/* .button:active {
+  background-color: #700660;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+} */
+
+.ChatBox {
+  background-color: azure;
+  border: 2px solid #7289da;
+  border-radius: 2%;
+  display: grid;
+  padding: 10px;
+  height: 500px;
+  overflow-y: auto;
+  /* place-items: center; */
+}
+
+.ChatBox::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.ChatBox {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.Pim {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+}
+
+.rightenter {
+  display: flex;
+  justify-content: flex-end;
+  color: grey;
+  font-size: small;
+}
+
+.LeftPim {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+.enter {
+  display: flex;
+  justify-content: flex-start;
+  color: grey;
+  font-size: small;
+}
+
+.fixbutton {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.Rena {
+  width: 100%;
+  border-color: #7289da;
+  border-radius: 8%;
+}
+
+.RenaForm {
+  margin-top: 10px;
 }

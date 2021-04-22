@@ -1,9 +1,13 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { io } from "socket.io-client";
 import userContext from "../context/userContext";
 import axios from "axios";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
+import { TextField, Button } from "@material-ui/core";
+import SendIcon from "@material-ui/icons/Send";
+import moment from "moment";
 
 const socket = io.connect("http://localhost:4000", { reconnect: true });
 
@@ -16,6 +20,14 @@ export default function PrototypePage() {
   const { user, logOut, userInformation } = useContext(userContext);
   const route_params = useParams();
   const route_channelId = route_params.channelId;
+
+  const setRef = useCallback((node) => {
+    if (node) {
+      node.scrollIntoView({ smooth: true });
+    }
+  }, []);
+
+  const now = moment().format("h:mm a");
 
   useEffect(() => {
     const messages = [];
@@ -75,60 +87,96 @@ export default function PrototypePage() {
   return (
     <div>
       <Link to="/">
-        <button>Go back</button>
+        <button className="button">Go back</button>
       </Link>
-      <button onClick={logOut}>logout</button>
-      <p>Prototype page</p>
+      <button className="button" onClick={logOut}>
+        logout
+      </button>
+      <p style={{ color: "azure", fontWeight: "bold" }}>*Channel</p>
+      <div className="ChatBox">
+        {messagesFromDB.length ? (
+          messagesFromDB.map((msg, index) =>
+            msg.userId._id === user ? (
+              <div className="Pim">
+                <div
+                  className="fixbutton"
+                  key={index}
+                  ref={messagesFromDB ? setRef : null}
+                >
+                  <p style={{ textAlign: "right" }}>{msg.text}</p>
 
-      {messagesFromDB.length ? (
-        messagesFromDB.map((msg, index) =>
-          msg.userId._id === user ? (
-            <div key={index}>
-              <p style={{ textAlign: "right" }}>
-                {msg.userId.username}:{msg.text}
-              </p>
-              <button onClick={() => deleteClicked(msg._id)}>X</button>
-            </div>
-          ) : (
-            <div key={index}>
-              <p style={{ textAlign: "left" }}>
-                {msg.userId.username}:{msg.text}
-              </p>
-            </div>
+                  <HighlightOffIcon
+                    className="button"
+                    onClick={() => deleteClicked(msg._id)}
+                  />
+                </div>
+                <div>
+                  <p className="rightenter">
+                    {moment(msg.createdAt).format("h:mm a")}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div key={index}>
+                <div className="LeftPim">
+                  <p style={{ textAlign: "left" }}>
+                    <span style={{ color: "purple" }}>
+                      {msg.userId.username}
+                    </span>
+                    :{msg.text}
+                  </p>
+                  <div className="enter">
+                    <p>{moment(msg.createdAt).format("h:mm a")}</p>
+                  </div>
+                </div>
+              </div>
+            )
           )
-        )
-      ) : (
-        <></>
-      )}
-      {newMessage.length ? (
-        newMessage.map((msg, index) =>
-          msg.userId === user ? (
-            <div key={index}>
-              <p style={{ textAlign: "right" }}>
-                {msg.userName}:{msg.text}
-              </p>
-            </div>
-          ) : (
-            <div key={index}>
-              <p style={{ textAlign: "left" }}>
-                {msg.userName}:{msg.text}
-              </p>
-            </div>
+        ) : (
+          <></>
+        )}
+        {newMessage.length ? (
+          newMessage.map((msg, index) =>
+            msg.userId === user ? (
+              <div key={index} ref={newMessage ? setRef : null}>
+                <p style={{ textAlign: "right" }}>{msg.text}</p>
+                <div className="rightenter">
+                  <p>{moment(msg.createdAt).format("h:mm a")}</p>
+                </div>
+              </div>
+            ) : (
+              <div key={index}>
+                <p style={{ textAlign: "left" }}>
+                  {msg.userName}:{msg.text}
+                </p>
+                <div className="enter">
+                  <p>{moment(msg.createdAt).format("h:mm a")}</p>
+                </div>
+              </div>
+            )
           )
-        )
-      ) : (
-        <></>
-      )}
-
-      <form onSubmit={sendMessage}>
-        <label>Message:</label>
-        <br></br>
-        <input
+        ) : (
+          <></>
+        )}
+      </div>
+      <form onSubmit={sendMessage} className="RenaForm">
+        <TextField
+          className="Rena"
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          id="outlined-basic"
+          label="Type here BITCH"
+          variant="outlined"
         />
-        <button type="submit">Send</button>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          endIcon={<SendIcon />}
+        >
+          send
+        </Button>
       </form>
     </div>
   );
