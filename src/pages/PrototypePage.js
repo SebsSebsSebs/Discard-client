@@ -50,7 +50,7 @@ export default function PrototypePage() {
   socket.on("Done deleting", (i) => {
     const newArray = [...newMessage];
 
-    newArray.splice(i);
+    newArray.splice(i, 1);
     setNewMessage(newArray);
   });
 
@@ -128,7 +128,7 @@ export default function PrototypePage() {
                   </div>
                 </div>
               ) : (
-                <div key={index}>
+                <div key={index} ref={messagesFromDB ? setRef : null}>
                   <div className="LeftPim">
                     <p style={{ textAlign: "left" }}>
                       <span style={{ color: "purple" }}>
@@ -150,19 +150,22 @@ export default function PrototypePage() {
             newMessage.map((msg, index) =>
               msg.userId === user ? (
                 <div key={index} ref={newMessage ? setRef : null}>
-                  <p style={{ textAlign: "right" }}>{msg.text}</p>
-                  <HighlightOffIcon
-                    className="button"
-                    onClick={() => removeMessageOnIndex(index, msg._id)}
-                  />
+                  <div className="rightshift">
+                    <p style={{ textAlign: "right" }}>{msg.text}</p>
+                    <HighlightOffIcon
+                      className="button"
+                      onClick={() => removeMessageOnIndex(index, msg._id)}
+                    />
+                  </div>
                   <div className="rightenter">
                     <p>{moment(msg.createdAt).format("h:mm a")}</p>
                   </div>
                 </div>
               ) : (
-                <div key={index}>
+                <div key={index} ref={messagesFromDB ? setRef : null}>
                   <p style={{ textAlign: "left" }}>
-                    {msg.userName}:{msg.text}
+                    <span style={{ color: "purple" }}>{msg.userName}</span>:
+                    {msg.text}
                   </p>
                   <div className="enter">
                     <p>{moment(msg.createdAt).format("h:mm a")}</p>

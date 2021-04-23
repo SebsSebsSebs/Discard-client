@@ -163,3 +163,7 @@
 .welcome {
   color: #ffffff;
 }
+.rightshift {
+  display: flex;
+  justify-content: flex-end;
+}
