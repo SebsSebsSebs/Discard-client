@@ -47,6 +47,20 @@ export default function PrototypePage() {
     }
   });
 
+  socket.on("Done deleting", (i) => {
+    const newArray = [...newMessage];
+
+    newArray.splice(i);
+    setNewMessage(newArray);
+  });
+
+  function removeMessageOnIndex(i, id) {
+    socket.emit("Delete", {
+      messageId: id,
+      index: i,
+    });
+  }
+
   useEffect(() => {
     async function getData() {
       const response = await axios.get(
@@ -55,7 +69,6 @@ export default function PrototypePage() {
       if (Array.isArray(response.data)) {
         setMessagesFromDB(response.data);
       }
-      console.log("response with all messages:", response.data);
     }
     getData();
   }, [deletedMessage]);
@@ -138,6 +151,10 @@ export default function PrototypePage() {
               msg.userId === user ? (
                 <div key={index} ref={newMessage ? setRef : null}>
                   <p style={{ textAlign: "right" }}>{msg.text}</p>
+                  <HighlightOffIcon
+                    className="button"
+                    onClick={() => removeMessageOnIndex(index, msg._id)}
+                  />
                   <div className="rightenter">
                     <p>{moment(msg.createdAt).format("h:mm a")}</p>
                   </div>
