@@ -99,10 +99,15 @@ function ChannelPage() {
               <h1>Welcome!</h1>
               <p>Sign up to get started! </p>
             </div>
-            <div>
+            <div className="auth_buttons">
               <Link to="/signup">
                 <button className="create_channel" type="button">
                   Sign up
+                </button>
+              </Link>
+              <Link to="/login">
+                <button className="create_channel" type="button">
+                 login
                 </button>
               </Link>
             </div>

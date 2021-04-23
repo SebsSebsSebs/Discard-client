@@ -167,3 +167,8 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.auth_buttons{
+  display:flex;
+  justify-content: space-around;
+}
